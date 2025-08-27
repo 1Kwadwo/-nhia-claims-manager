@@ -134,7 +134,10 @@ class Claim extends Model
         });
 
         static::saved(function ($claim) {
-            $claim->calculateTotalCost();
+            // Only calculate total cost if there are claim items
+            if ($claim->claimItems()->count() > 0) {
+                $claim->calculateTotalCost();
+            }
         });
     }
 }

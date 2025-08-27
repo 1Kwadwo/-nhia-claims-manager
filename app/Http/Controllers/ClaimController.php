@@ -118,6 +118,9 @@ class ClaimController extends Controller
                 }
             }
 
+            // Calculate total cost after creating claim items
+            $claim->calculateTotalCost();
+
             DB::commit();
 
             // Log successful creation
