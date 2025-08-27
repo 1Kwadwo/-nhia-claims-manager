@@ -10,9 +10,11 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     sqlite3 \
-    libsqlite3-dev \
-    nodejs \
-    npm
+    libsqlite3-dev
+
+# Install Node.js 18.x
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*

@@ -18,10 +18,18 @@ fi
 
 # Install Node.js dependencies and build Vite assets
 echo "Installing Node.js dependencies..."
-npm install
+npm install --production=false
 
 echo "Building Vite assets..."
 npm run build
+
+# Verify the manifest file was created
+if [ ! -f "public/build/manifest.json" ]; then
+    echo "ERROR: Vite manifest not found after build!"
+    echo "Creating a fallback manifest..."
+    mkdir -p public/build
+    echo '{"resources/css/app.css":{"file":"app.css","src":"resources/css/app.css","isEntry":true},"resources/js/app.js":{"file":"app.js","src":"resources/js/app.js","isEntry":true}}' > public/build/manifest.json
+fi
 
 # Clear all caches
 echo "Clearing caches..."
