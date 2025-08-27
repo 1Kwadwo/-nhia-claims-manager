@@ -30,17 +30,17 @@ COPY . /var/www
 # Copy existing application directory permissions
 COPY --chown=www-data:www-data . /var/www
 
+# Copy .env.example to .env
+RUN cp .env.example .env
+
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader
-
-# Generate application key
-RUN php artisan key:generate
 
 # Create SQLite database
 RUN touch database/database.sqlite
 
-# Run migrations and seed
-RUN php artisan migrate --seed --force
+# Make startup script executable
+RUN chmod +x start.sh
 
 # Change ownership of our applications
 RUN chown -R www-data:www-data /var/www
@@ -49,4 +49,4 @@ RUN chown -R www-data:www-data /var/www
 EXPOSE 8000
 
 # Start Laravel development server
-CMD php artisan serve --host=0.0.0.0 --port=8000
+CMD ["./start.sh"]
