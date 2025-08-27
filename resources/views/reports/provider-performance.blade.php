@@ -39,9 +39,13 @@
                                     <td>GH₵ {{ number_format($provider->total_amount, 2) }}</td>
                                     <td>GH₵ {{ number_format($provider->average_amount, 2) }}</td>
                                     <td>
-                                        <a href="{{ route('providers.show', $provider) }}" class="btn btn-sm btn-info">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
+                                        @if($provider->id)
+                                            <a href="{{ route('providers.show', $provider->id) }}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        @else
+                                            <span class="text-muted">N/A</span>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

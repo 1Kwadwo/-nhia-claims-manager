@@ -98,6 +98,7 @@ class ReportController extends Controller
         // Transform data for the view
         $providers = $providerStats->map(function ($stat) {
             return (object) [
+                'id' => $stat->provider->id ?? null,
                 'name' => $stat->provider->name ?? 'Unknown Provider',
                 'nhis_code' => $stat->provider->nhis_code ?? 'N/A',
                 'region' => $stat->provider->region ?? 'N/A',
@@ -144,6 +145,7 @@ class ReportController extends Controller
         // Transform data for the view
         $beneficiaries = $beneficiaryStats->map(function ($stat) {
             return (object) [
+                'id' => $stat->beneficiary->id ?? null,
                 'full_name' => $stat->beneficiary->full_name ?? 'Unknown Beneficiary',
                 'nhis_number' => $stat->beneficiary->nhis_number ?? 'N/A',
                 'scheme_type' => $stat->beneficiary->scheme_type ?? 'N/A',

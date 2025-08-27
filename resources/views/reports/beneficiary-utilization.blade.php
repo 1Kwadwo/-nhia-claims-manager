@@ -43,9 +43,13 @@
                                     <td>GH₵ {{ number_format($beneficiary->total_amount, 2) }}</td>
                                     <td>GH₵ {{ number_format($beneficiary->average_amount, 2) }}</td>
                                     <td>
-                                        <a href="{{ route('beneficiaries.show', $beneficiary) }}" class="btn btn-sm btn-info">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
+                                        @if($beneficiary->id)
+                                            <a href="{{ route('beneficiaries.show', $beneficiary->id) }}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        @else
+                                            <span class="text-muted">N/A</span>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
