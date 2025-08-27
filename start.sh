@@ -16,6 +16,13 @@ if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "" ] || [ "$APP_KEY" = "base64:" ]; then
     php artisan key:generate --force
 fi
 
+# Install Node.js dependencies and build Vite assets
+echo "Installing Node.js dependencies..."
+npm install
+
+echo "Building Vite assets..."
+npm run build
+
 # Clear all caches
 echo "Clearing caches..."
 php artisan config:clear

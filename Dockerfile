@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     sqlite3 \
-    libsqlite3-dev
+    libsqlite3-dev \
+    nodejs \
+    npm
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
