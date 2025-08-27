@@ -95,10 +95,6 @@
                         </tbody>
                     </table>
                 </div>
-                
-                <div class="d-flex justify-content-center">
-                    {{ $claims->links() }}
-                </div>
             @else
                 <div class="text-center py-4">
                     <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
