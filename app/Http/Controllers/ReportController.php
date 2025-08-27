@@ -45,9 +45,14 @@ class ReportController extends Controller
         $claims = $query->orderBy('date_of_service', 'desc')->get();
 
         // Calculate summary statistics
+        $totalClaims = $claims->count();
+        $totalAmount = $claims->sum('total_cost');
+        $approvedClaims = $claims->where('status', 'Approved')->count();
+        $pendingClaims = $claims->whereIn('status', ['Draft', 'Submitted', 'UnderReview'])->count();
+        
         $summary = [
-            'total_claims' => $claims->count(),
-            'total_amount' => $claims->sum('total_cost'),
+            'total_claims' => $totalClaims,
+            'total_amount' => $totalAmount,
             'claims_by_status' => $claims->groupBy('status')->map->count(),
             'amount_by_status' => $claims->groupBy('status')->map->sum('total_cost'),
             'claims_by_provider' => $claims->groupBy('provider.name')->map->count(),
@@ -56,7 +61,7 @@ class ReportController extends Controller
 
         $providers = Provider::orderBy('name')->get();
 
-        return view('reports.claims-summary', compact('claims', 'summary', 'providers'));
+        return view('reports.claims-summary', compact('claims', 'summary', 'providers', 'totalClaims', 'totalAmount', 'approvedClaims', 'pendingClaims'));
     }
 
     /**
@@ -87,10 +92,24 @@ class ReportController extends Controller
             ->orderBy('total_claims', 'desc')
             ->get();
 
-        // Load provider details
+        // Load provider details and calculate stats
         $providerStats->load('provider');
+        
+        // Transform data for the view
+        $providers = $providerStats->map(function ($stat) {
+            return (object) [
+                'name' => $stat->provider->name ?? 'Unknown Provider',
+                'nhis_code' => $stat->provider->nhis_code ?? 'N/A',
+                'region' => $stat->provider->region ?? 'N/A',
+                'claims_count' => $stat->total_claims,
+                'total_amount' => $stat->total_amount,
+                'average_amount' => $stat->avg_amount,
+                'approved_claims' => $stat->approved_claims,
+                'rejected_claims' => $stat->rejected_claims,
+            ];
+        });
 
-        return view('reports.provider-performance', compact('providerStats'));
+        return view('reports.provider-performance', compact('providers'));
     }
 
     /**
@@ -119,10 +138,22 @@ class ReportController extends Controller
             ->orderBy('total_claims', 'desc')
             ->get();
 
-        // Load beneficiary details
+        // Load beneficiary details and calculate stats
         $beneficiaryStats->load('beneficiary');
+        
+        // Transform data for the view
+        $beneficiaries = $beneficiaryStats->map(function ($stat) {
+            return (object) [
+                'full_name' => $stat->beneficiary->full_name ?? 'Unknown Beneficiary',
+                'nhis_number' => $stat->beneficiary->nhis_number ?? 'N/A',
+                'scheme_type' => $stat->beneficiary->scheme_type ?? 'N/A',
+                'claims_count' => $stat->total_claims,
+                'total_amount' => $stat->total_amount,
+                'average_amount' => $stat->avg_amount,
+            ];
+        });
 
-        return view('reports.beneficiary-utilization', compact('beneficiaryStats'));
+        return view('reports.beneficiary-utilization', compact('beneficiaries'));
     }
 
     /**
